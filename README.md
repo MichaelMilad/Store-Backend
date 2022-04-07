@@ -12,6 +12,7 @@ ENV = dev
 SALT_ROUNDS = 12
 PASSWORD_PEPPER = 'udacity331'
 JWT_SECRET = asecretusedforjwtsignatureandverification
+token='eyJhbGciOiJIUzI1NiJ9.TWljaGFlbE1pbGFk.DAe1kWaiBmzIwEPrA1W6UWbsP-2Vr5XwqO0JawJu688'
 
 (1)Change these .env variables to suite your workspace.
 (2)databases names that must exist are : 'store' and 'store_test'
