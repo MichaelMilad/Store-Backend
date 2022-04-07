@@ -26,15 +26,15 @@ export class userStore {
     }
   }
 
-  async create(firstName: string, lastName: string, password: string): Promise<string> {
+  async create(firstName: string, lastName: string, password: string): Promise<[User, string]> {
     try {
       const conn = await pool.connect();
-      const sql = 'INSERT INTO users(firstName,lastName,password) VALUES ($1, $2, $3);';
+      const sql = 'INSERT INTO users(firstName,lastName,password) VALUES ($1, $2, $3) RETURNING *;';
       const hash = await bcrypt.hash(password + PASSWORD_PEPPER, SALT_ROUNDS);
-      await conn.query(sql, [firstName, lastName, hash]);
+      const result = await conn.query(sql, [firstName, lastName, hash]);
       const token = await jwt.sign(firstName + lastName, JWT_SECRET as string);
       await conn.release();
-      return token;
+      return [result.rows[0], token];
     } catch (e) {
       throw new Error(`Couldnt get create user ${e}`);
     }
@@ -55,7 +55,7 @@ export class userStore {
   async delete(id: number): Promise<User> {
     try {
       const conn = await pool.connect();
-      const sql = 'DELETE FROM users WHERE id = $1;';
+      const sql = 'DELETE FROM users WHERE id = $1 RETURNING *;';
       const result = await conn.query(sql, [id]);
       await conn.release();
       return result.rows[0];
@@ -64,7 +64,7 @@ export class userStore {
     }
   }
 
-  async login(user: User) {
+  async login(user: User): Promise<[User, string] | string> {
     try {
       const { firstName, lastName, password } = user;
       const conn = await pool.connect();
@@ -80,7 +80,7 @@ export class userStore {
       await conn.release();
       if (isValid) {
         const token = await jwt.sign(firstName + lastName, JWT_SECRET as string);
-        return token;
+        return [foundUser.rows[0], token];
       } else {
         return 'Invalid Credentials';
       }

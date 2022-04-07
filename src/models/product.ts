@@ -28,12 +28,13 @@ export class productStore {
     }
   }
 
-  async create(name: string, price: number, category: string): Promise<void> {
+  async create(name: string, price: number, category: string): Promise<Product> {
     try {
       const conn = await pool.connect();
-      const sql = 'INSERT INTO products (name,price,category) VALUES ($1,$2,$3);';
-      await conn.query(sql, [name, price, category]);
+      const sql = 'INSERT INTO products (name,price,category) VALUES ($1,$2,$3) RETURNING *;';
+      const result = await conn.query(sql, [name, price, category]);
       await conn.release();
+      return result.rows[0];
     } catch (e) {
       throw new Error(`Couldnt create product ${e}`);
     }
@@ -54,7 +55,7 @@ export class productStore {
   async delete(id: number): Promise<Product> {
     try {
       const conn = await pool.connect();
-      const sql = 'DELETE FROM products WHERE id=$1';
+      const sql = 'DELETE FROM products WHERE id=$1 RETURNING *;';
       const result = await conn.query(sql, [id]);
       await conn.release();
       return result.rows[0];

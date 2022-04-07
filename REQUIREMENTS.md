@@ -25,7 +25,7 @@ These are the notes from a meeting with the frontend developer that describe wha
 #### Orders
 - Current Order by user (args: user id)[token required] => `localhost:3000/orders/:UserId` [GET]
 - [EXTRA] Create Order => `localhost:3000/orders/:UserId` [POST](PRODUCT_ID,QUANTITY => IN REQUEST BODY AS JSON)  
-        ..Will Send Back A JWT Token in HEADER
+        ..Will Send Back A JWT Token in HEADER ** AND Will Create Orders Table & Order-Products Table
 
 - [OPTIONAL] Completed Orders by user (args: user id)[token required] `Not Implied`
 
@@ -44,8 +44,9 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 #### Orders
 - id
-- id of each product in the order
-- quantity of each product in the order
-- user_id
-- status of order (active or complete)
+- user_id (references user(id))
 
+### Orders_Products
+- user_id
+- product_id
+- quantity
