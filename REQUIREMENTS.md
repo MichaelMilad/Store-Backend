@@ -31,22 +31,57 @@ These are the notes from a meeting with the frontend developer that describe wha
 
 ## Data Shapes
 #### Product
--  id
-- name
-- price
-- [OPTIONAL] category `Implied`
+-  id : number (SERIAL)
+- name : string (VARCHAR(50))
+- price : number (NUMERIC)
+- [OPTIONAL] category `Implied` : string (VARCHAR(50))
 
 #### User
-- id
-- firstName
-- lastName
-- password
+- id : number (SERIAL)
+- firstname : string (VARCHAR(50))
+- lastname : string (VARCHAR(50))
+- password : string (VARCHAR(255))
 
 #### Orders
-- id
-- user_id (references user(id))
+- id : number (SERIAL)
+- user_id (references user(id)) : number (INTEGER)
 
 ### Orders_Products
-- user_id
-- product_id
-- quantity
+- order_id (references order(id)): number (INTEGER)
+- product_id (references product(id)) : number (INTEGER)
+- quantity : number (INTEGER)
+
+## Database Schemas
+### Users Table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY NOT NULL,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+### Products Table
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    price NUMERIC(100,2) NOT NULL,
+    category VARCHAR(50)
+);
+
+### Orders Table
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY NOT NULL,
+    user_id INTEGER NOT NULL,
+
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+### Order_Products Table
+CREATE TABLE order_products (
+    order_id INTEGER NOT NULL,
+    product_id INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
+
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE ON UPDATE CASCADE
+)

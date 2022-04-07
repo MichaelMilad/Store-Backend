@@ -10,7 +10,7 @@ export type Product = {
 };
 
 export class productStore {
-  async index(category: string): Promise<Product[] | null> {
+  async index(category?: string): Promise<Product[] | null> {
     try {
       const conn = await pool.connect();
       if (!category) {

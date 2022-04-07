@@ -19,8 +19,8 @@ router.get('/', verifyToken, async (req, res: Response) => {
 //Creating a new user :
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const { firstName, lastName, password } = req.body;
-    const result = await store.create(firstName as string, lastName as string, password as string);
+    const { firstname, lastname, password } = req.body;
+    const result = await store.create(firstname as string, lastname as string, password as string);
     const token = result[1];
     res.header('token', token as string);
     res.json(result[0]);
@@ -53,10 +53,10 @@ router.delete('/:id', verifyToken, async (req: Request, res: Response) => {
 
 router.post('/login', async (req: Request, res: Response) => {
   try {
-    const firstName = req.body.firstName as string;
-    const lastName = req.body.lastName as string;
+    const firstname = req.body.firstname as string;
+    const lastname = req.body.lastname as string;
     const password = req.body.password as string;
-    const result = await store.login({ firstName, lastName, password });
+    const result = await store.login({ firstname, lastname, password });
     const token = result[1];
     if (result === 'Invalid Credentials') return res.send(result);
     res.header('token', token).json(result[0]);
